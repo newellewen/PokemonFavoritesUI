@@ -3,6 +3,23 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
+builder.Services.AddHttpClient("PokemonFavoritesAPI", httpClient =>
+{
+    var pokeApiBaseUrl = builder.Configuration.GetValue<string>("BaseUrls:PokemonFavoritesAPI");
+    var handler = new HttpClientHandler();
+    handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+    handler.ServerCertificateCustomValidationCallback = 
+        (httpRequestMessage, cert, cetChain, policyErrors) =>
+        {
+            return true;
+        };
+
+    
+    
+    httpClient = new HttpClient(handler);
+    httpClient.BaseAddress = new Uri(pokeApiBaseUrl);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
