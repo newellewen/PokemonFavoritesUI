@@ -27,6 +27,11 @@
         {
             <tr>
                 <td>@item.Name</td>
+                <td><a class="page-link" 
+                       href="/PokemonDetail/@(item.Url.Replace("https://pokeapi.co/api/v2/pokemon/", String.Empty))">Detail
+                        </a>
+                </td>
+                
             </tr>
         }
     </table>				
