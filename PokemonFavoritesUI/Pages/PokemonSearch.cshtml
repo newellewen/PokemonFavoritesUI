@@ -8,3 +8,59 @@
 <div>
     @ViewData["Results"]
 </div>
+
+
+<div>
+    <!-- pager parameter controls -->
+    <form method="post" class="container border text-left pt-2 mb-3">
+        <div class="form-row form-group">
+            <div class="col">
+                <label asp-for="Limit">Limit</label>
+                <select asp-for="Limit" asp-items="Model.LimitList" class="form-control form-control-sm" onchange="this.form.submit()"></select>
+            </div>
+        </div>
+    </form>
+    
+    <!-- items being paged -->
+    <table class="table table-sm table-striped table-bordered">
+        @foreach (var item in Model.Response.Results)
+        {
+            <tr>
+                <td>@item.Name</td>
+            </tr>
+        }
+    </table>				
+
+    @if (Model.Response.Results.Any())
+    {
+        <nav class="table-responsive">
+            <ul class="pagination justify-content-center d-flex flex-wrap">
+                <li class="page-item">
+                    <a class="page-link" href="/PokemonSearch?limit=@(Model.Limit)&offset=0">First</a>
+                </li>
+
+                @if (Model.Offset > 0)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="/PokemonSearch?limit=@(Model.Limit)&offset=@(Model.Offset - Model.Limit)">Previous</a>
+                    </li>
+                }
+
+                <li class="page-item active">
+                    <a class="page-link" href="/PokemonSearch?limit=@(Model.Limit)&offset=@(Model.Offset)">@(Model.CurrentPage)</a>
+                </li>
+                
+
+                @if (Model.CurrentPage < Model.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="/PokemonSearch?limit=@(Model.Limit)&offset=@(Model.Offset + Model.Limit)">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="/PokemonSearch?limit=@(Model.Limit)&offset=@(Model.Limit * Model.TotalPages)">Last (@(Model.TotalPages))</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>

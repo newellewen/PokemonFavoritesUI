@@ -13,8 +13,6 @@ builder.Services.AddHttpClient("PokemonFavoritesAPI", httpClient =>
         {
             return true;
         };
-
-    
     
     httpClient = new HttpClient(handler);
     httpClient.BaseAddress = new Uri(pokeApiBaseUrl);

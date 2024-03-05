@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text.Json;
+using JW;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using PokemonFavoritesUI.Models;
 
 namespace PokemonFavoritesUI.Pages
 {
@@ -14,18 +14,18 @@ namespace PokemonFavoritesUI.Pages
         public int Limit { get; set; }
         [FromQuery(Name = "offset")]
         public int Offset { get; set; }
-        
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
+        public PokemonSearchResponse Response { get; set; }
+        public SelectList LimitList = new SelectList(new []{ 1, 5, 10, 20, 50});
+
         public PokemonSearchModel(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
-            Limit = 1;
-            Offset = 1;
         }
         
         public async Task OnGet()
         {
-            //var httpClient = _httpClientFactory.CreateClient("PokemonFavoritesAPI");
-            
             var handler = new HttpClientHandler();
             handler.ClientCertificateOptions = ClientCertificateOption.Manual;
             handler.ServerCertificateCustomValidationCallback = 
@@ -33,12 +33,9 @@ namespace PokemonFavoritesUI.Pages
                 {
                     return true;
                 };
-
-    
-    
+            
             var httpClient = new HttpClient(handler);
             httpClient.BaseAddress = new Uri("http://localhost:5019/");
-            
             
             var httpResponseMessage = await httpClient.GetAsync(
                 $"pokemon?limit={Limit}&offset={Offset}");
@@ -50,7 +47,14 @@ namespace PokemonFavoritesUI.Pages
 
                 using (StreamReader reader = new StreamReader(contentStream))
                 {
-                    ViewData["Results"] = reader.ReadToEnd();
+                    var json = reader.ReadToEnd();
+                    Response = JsonSerializer.Deserialize<PokemonSearchResponse>(json, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                    TotalPages = Response.Count / Limit;
+                    CurrentPage = Offset / Limit;
+                    Console.WriteLine(Response.Next);
                 }
             }
         }
