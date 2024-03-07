@@ -4,5 +4,20 @@
     ViewData["Title"] = "Home";
 }
 
-<h1>Home</h1>
+<h1>Favorites Home</h1>
 
+<table class="table table-sm table-striped table-bordered">
+    @foreach (var favorite in Model.FavoritePokemon)
+    {
+        <tr>
+            <td>@favorite.PokemonId</td>
+            <td>
+                <a class="page-link"
+                   href="/PokemonDetail/@favorite.PokemonId/">@favorite.Name
+                </a>
+            </td>
+            <td>@favorite.Types</td>
+            <td><img class="card-img-top" src="@(favorite.Thumbnail)" style="width:100px;height:100px;"></td>
+        </tr>
+    }
+</table>	

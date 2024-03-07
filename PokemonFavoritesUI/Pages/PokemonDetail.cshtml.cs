@@ -29,7 +29,7 @@ namespace PokemonFavoritesUI.Pages
             
             await SetPokemon();
             await SetUserId();
-            var httpClient = GetHttpClient();
+            var httpClient = HttpClientHelper.GetHttpClient();
 
             var types = String.Join(", ", Pokemon.Types.Select(t => t.Type.Name));
             var thumbnail = Pokemon.Sprites?.FrontShiny;
@@ -58,7 +58,7 @@ namespace PokemonFavoritesUI.Pages
         {
             await SetPokemon();
             await SetUserId();
-            var httpClient = GetHttpClient();
+            var httpClient = HttpClientHelper.GetHttpClient();
             
             var deleteFavoriteResponse = await httpClient.DeleteAsync(
                 $"/Favorites?userId={UserId}&pokemonId={PokemonId}");
@@ -71,25 +71,9 @@ namespace PokemonFavoritesUI.Pages
             return Redirect("/Home");
         }
 
-        private HttpClient GetHttpClient()
-        {
-            var handler = new HttpClientHandler();
-            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-            handler.ServerCertificateCustomValidationCallback = 
-                (httpRequestMessage, cert, cetChain, policyErrors) =>
-                {
-                    return true;
-                };
-            
-            var httpClient = new HttpClient(handler);
-            httpClient.BaseAddress = new Uri("http://localhost:5019/");
-
-            return httpClient;
-        }
-
         private async Task SetPokemon()
         {
-            var httpClient = GetHttpClient();
+            var httpClient = HttpClientHelper.GetHttpClient();
             var getPokemonResponse = await httpClient.GetAsync(
                 $"pokemon/{PokemonId}");
 
@@ -112,7 +96,7 @@ namespace PokemonFavoritesUI.Pages
 
         private async Task SetIsFavorite()
         {
-            var httpClient = GetHttpClient();
+            var httpClient = HttpClientHelper.GetHttpClient();
             var getIsFavoriteResponse = await httpClient.GetAsync($"Favorites/IsFavorite?userId={UserId}&pokemonId={PokemonId}");
             if (getIsFavoriteResponse.IsSuccessStatusCode)
             {
