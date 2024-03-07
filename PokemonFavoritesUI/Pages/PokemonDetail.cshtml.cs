@@ -31,10 +31,15 @@ namespace PokemonFavoritesUI.Pages
             await SetUserId();
             var httpClient = GetHttpClient();
 
+            var types = String.Join(", ", Pokemon.Types.Select(t => t.Type.Name));
+            var thumbnail = Pokemon.Sprites?.FrontShiny;
+            
             StringContent addFavoriteContent = new StringContent(
                 $"{{ \"userId\": \"{UserId}\"," +
                 $"\"pokemonId\": \"{PokemonId}\"," +
-                $" \"name\": \"{Pokemon.Name}\"}}",
+                $"\"name\": \"{Pokemon.Name}\"," +
+                $"\"types\": \"{types}\"," +
+                $" \"thumbnail\": \"{thumbnail}\"}}",
                 UnicodeEncoding.UTF8,
                 "application/json");
         

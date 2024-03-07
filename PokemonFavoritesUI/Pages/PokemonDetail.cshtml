@@ -8,7 +8,7 @@
     <img class="card-img-top" src="@(Model.Pokemon.Sprites?.FrontShiny)">
     <div class="card-body">
         <h5 class="card-title">@(Model.Pokemon.Name)</h5>
-        <h6>(@(String.Join(", ", Model.Pokemon.Types.Select(t => t.Type.Name)))</h6>
+        <h6>(@(String.Join(", ", Model.Pokemon.Types.Select(t => t.Type.Name))))</h6>
     
         @foreach (var pokemonStat in Model.Pokemon.Stats)
         {
