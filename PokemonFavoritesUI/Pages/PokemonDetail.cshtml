@@ -4,14 +4,32 @@
     ViewData["Title"] = "PokemonDetail";
 }
 
-<h1>@(Model.Pokemon.Name)</h1>
-
-
 <div class="card" style="width: 40rem;">
     <img class="card-img-top" src="@(Model.Pokemon.Sprites?.FrontShiny)">
     <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
+        <h5 class="card-title">@(Model.Pokemon.Name)</h5>
+        <h6>(@(String.Join(", ", Model.Pokemon.Types.Select(t => t.Type.Name)))</h6>
+    
+        @foreach (var pokemonStat in Model.Pokemon.Stats)
+        {
+            <h6>@pokemonStat.Stat.Name : @pokemonStat.BaseStat</h6>
+        }
+        
+        <form method="post">
+        @if (Model.IsFavorite)
+        {
+            <div class="form-group">
+                <button class="btn btn-primary btn-sm" asp-page-handler="RemoveFavorite">Remove favorite</button>
+            </div>
+        }
+
+        @if (!Model.IsFavorite)
+        {
+            <div class="form-group">
+                <button class="btn btn-primary btn-sm" asp-page-handler="AddFavorite">Add to Favorites</button>
+            </div>
+        }
+        </form>
+        
     </div>
 </div>

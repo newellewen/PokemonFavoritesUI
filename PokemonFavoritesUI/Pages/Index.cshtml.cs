@@ -12,7 +12,14 @@ public class IndexModel : PageModel
         _logger = logger;
     }
 
-    public void OnGet()
+    public IActionResult OnGet()
     {
+        var jwt = Request.Cookies["jwtCookie"];
+        if (String.IsNullOrEmpty(jwt))
+        {
+            return Redirect("/Login");
+        }
+
+        return null;
     }
 }

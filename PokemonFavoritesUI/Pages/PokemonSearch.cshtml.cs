@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using System.Text.Json;
 using JW;
 using Microsoft.AspNetCore.Mvc;
@@ -37,10 +38,12 @@ namespace PokemonFavoritesUI.Pages
             
             var httpClient = new HttpClient(handler);
             httpClient.BaseAddress = new Uri("http://localhost:5019/");
-            
-            var httpResponseMessage = await httpClient.GetAsync(
-                $"pokemon?limit={Limit}&offset={Offset}");
+            var jwt = Request.Cookies["jwtCookie"];
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+            var request = new HttpRequestMessage(HttpMethod.Get, $"pokemon?limit={Limit}&offset={Offset}");
 
+            var httpResponseMessage = await httpClient.SendAsync(request);
+            
             if (httpResponseMessage.IsSuccessStatusCode)
             {
                 using var contentStream =
