@@ -4,6 +4,7 @@ using JW;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using PokemonFavoritesUI.Helpers;
 using PokemonFavoritesUI.Models;
 
 namespace PokemonFavoritesUI.Pages
@@ -27,21 +28,8 @@ namespace PokemonFavoritesUI.Pages
         
         public async Task OnGet()
         {
-            // TODO - figure out named HttpClient with handler/ignore SSL
-            var handler = new HttpClientHandler();
-            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-            handler.ServerCertificateCustomValidationCallback = 
-                (httpRequestMessage, cert, cetChain, policyErrors) =>
-                {
-                    return true;
-                };
-            
-            var httpClient = new HttpClient(handler);
-            httpClient.BaseAddress = new Uri("http://localhost:5019/");
-            var jwt = Request.Cookies["jwtCookie"];
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+            var httpClient = HttpClientHelper.GetHttpClient();
             var request = new HttpRequestMessage(HttpMethod.Get, $"pokemon?limit={Limit}&offset={Offset}");
-
             var httpResponseMessage = await httpClient.SendAsync(request);
             
             if (httpResponseMessage.IsSuccessStatusCode)

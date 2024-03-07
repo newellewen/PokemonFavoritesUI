@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using PokemonFavoritesUI.Helpers;
 using PokemonFavoritesUI.Models;
 
 namespace PokemonFavoritesUI.Pages
@@ -25,17 +26,7 @@ namespace PokemonFavoritesUI.Pages
         
         public async Task<IActionResult> OnPostRegister()
         {
-            // TODO - figure out named HttpClient with handler/ignore SSL
-            var handler = new HttpClientHandler();
-            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-            handler.ServerCertificateCustomValidationCallback = 
-                (httpRequestMessage, cert, cetChain, policyErrors) =>
-                {
-                    return true;
-                };
-            
-            var httpClient = new HttpClient(handler);
-            httpClient.BaseAddress = new Uri("https://localhost:7096/");
+            var httpClient = HttpClientHelper.GetHttpClient();
 
             StringContent registerContent = new StringContent(
                 $"{{ \"firstName\": \"{FirstName}\"," +

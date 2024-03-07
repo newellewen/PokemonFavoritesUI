@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using PokemonFavoritesUI.Helpers;
 using PokemonFavoritesUI.Models;
 
 namespace PokemonFavoritesUI.Pages;
@@ -39,17 +40,7 @@ public class Login : PageModel
     
     public async Task<IActionResult> OnPostLogin()
     {
-        // TODO - figure out named HttpClient with handler/ignore SSL
-        var handler = new HttpClientHandler();
-        handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-        handler.ServerCertificateCustomValidationCallback = 
-            (httpRequestMessage, cert, cetChain, policyErrors) =>
-            {
-                return true;
-            };
-            
-        var httpClient = new HttpClient(handler);
-        httpClient.BaseAddress = new Uri("http://localhost:5019/");
+        var httpClient = HttpClientHelper.GetHttpClient();
 
         StringContent content = new StringContent(
             $"{{ \"username\": \"{Username}\"," +
